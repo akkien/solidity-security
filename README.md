@@ -2,7 +2,23 @@
 
 ## Delegate call
 
+### Do caller need to declare same variable as in callee
+
 When A delegate call B, A does not need to explicitly declare variables as in B. The value at the same storage slot as in B was changed.
+
+Test contracts: /delegate-slot
+
+- SlotCallee.sol declare variable `number` at slot 0.
+- SlotCaller.sol do not declare any variable.
+  - When Caller call Callee to update value of `number`, slot 0 in Caller is changed.
+
+### Do delegate call `selfdestruct` destroy caller or callee
+
+Test contracts: /delegate-selfdestruct
+
+- SelfdestructCallee: has the function `selfdelete` that call selfdestruct
+- SelfdestructCaller: delegate call to `selfdelete`
+  - The contract was destroyed is the caller
 
 ## Upgradeable
 
