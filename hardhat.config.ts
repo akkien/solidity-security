@@ -45,6 +45,13 @@ const config: HardhatUserConfig = {
       timeout: 8000000,
       gasPrice: 20000000000, // 20 Gwei
     },
+    astraTestnet: {
+      url: process.env.ASTRA_TESTNET_URL || "",
+      accounts: [process.env.PRIVATE_KEY ? process.env.PRIVATE_KEY : ""],
+      chainId: 11115,
+      timeout: 8000000,
+      gasPrice: 20000000000, // 20 Gwei
+    },
   },
   etherscan: {
     apiKey: {

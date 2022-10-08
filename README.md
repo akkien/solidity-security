@@ -1,5 +1,9 @@
 # Learn Solidity Language
 
+## Delegate call
+
+When A delegate call B, A does not need to explicitly declare variables as in B. The value at the same storage slot as in B was changed.
+
 ## Upgradeable
 
 `Deploy StorageTransparent:`
