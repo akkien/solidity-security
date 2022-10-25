@@ -33,12 +33,6 @@ const config: HardhatUserConfig = {
     ],
   },
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts: [process.env.PRIVATE_KEY ? process.env.PRIVATE_KEY : ""],
-      timeout: 8000000,
-      gasPrice: 20000000000, // 20 Gwei
-    },
     goerli: {
       url: process.env.GOERLI_URL || "",
       accounts: [process.env.PRIVATE_KEY ? process.env.PRIVATE_KEY : ""],

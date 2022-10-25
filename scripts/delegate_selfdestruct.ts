@@ -10,8 +10,10 @@ async function main() {
   const Proxy = await ethers.getContractFactory("SelfdestructCaller");
 
   // Deploy
-  const logic = await Logic.deploy();
-  await logic.deployed();
+  // const logic = await Logic.deploy();
+  // await logic.deployed();
+  // console.log("logic depoyed at:", logic.address);
+  const logic = Logic.attach("0x3150cb71e1Af4C662c78B638c284dBA0dd2508C0");
   console.log("logic depoyed at:", logic.address);
 
   const proxy = await Proxy.deploy();
@@ -26,7 +28,11 @@ async function main() {
   console.log("logicNumber", logicNumber);
 
   // Proxy set
-  const proxySetTx = await proxy.delegateSetNumber(logic.address, 10);
+  const proxySetTx = await proxy.delegateSetNumber(logic.address, 10, {
+    gasLimit: 1000000,
+    maxFeePerGas: ethers.utils.parseUnits("6", "gwei"),
+    maxPriorityFeePerGas: ethers.utils.parseUnits("5", "gwei"),
+  });
   await proxySetTx.wait();
 
   const logicNumber2 = await logic.number();
@@ -40,7 +46,12 @@ async function main() {
   );
 
   // Proxy destruct
-  const proxyDestructTx = await proxy.delegateDelete(logic.address);
+  const proxyDestructTx = await proxy.delegateDelete(logic.address, {
+    type: 2,
+    gasLimit: 1000000,
+    maxFeePerGas: ethers.utils.parseUnits("6", "gwei"),
+    maxPriorityFeePerGas: ethers.utils.parseUnits("5", "gwei"),
+  });
   const deleteReceipt = await proxyDestructTx.wait();
   console.log("deleteReceipt", deleteReceipt);
 
@@ -51,12 +62,24 @@ async function main() {
   console.log("logicCode", logicCode);
 
   // Proxy set after destruct
-  const proxySetTx2 = await proxy.delegateSetNumber(logic.address, 20);
-  const receipt = await proxySetTx2.wait();
-  console.log("receipt", receipt);
+  try {
+    const proxySetTx2 = await proxy.delegateSetNumber(logic.address, 20, {
+      gasLimit: 1000000,
+      maxFeePerGas: ethers.utils.parseUnits("6", "gwei"),
+      maxPriorityFeePerGas: ethers.utils.parseUnits("5", "gwei"),
+    });
+    const receipt = await proxySetTx2.wait();
+    console.log("delegateSetNumbet - after deleted", receipt);
+  } catch (error) {
+    console.log("delegateSetNumbet - after deleted. ERROR", error);
+  }
 
-  const proxyNumber2 = await proxy.number();
-  console.log("proxyNumber - after deleted and still set", proxyNumber2);
+  try {
+    const proxyNumber2 = await proxy.number();
+    console.log("proxyNumber - after deleted and still set", proxyNumber2);
+  } catch (error) {
+    console.log("proxyNumber - after deleted and still set. ERROR", error);
+  }
 }
 
 // We recommend this pattern to be able to use async/await everywhere
